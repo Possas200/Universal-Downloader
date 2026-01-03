@@ -20,12 +20,22 @@ def download_youtube(url, path, format_type, progress_callback):
     command = ['yt-dlp', '--newline', '-o', output_template, url]
 
     if is_mp3:
-        command.extend(['-x', '--audio-format', 'mp3', '--audio-quality', '192K'])
+        # ALTERAÇÃO AQUI: Adicionados --add-metadata e --embed-thumbnail
+        command.extend([
+            '-x', 
+            '--audio-format', 'mp3', 
+            '--audio-quality', '192K',
+            '--add-metadata',    # Adiciona Artista, Título, Álbum (se disponível)
+            '--embed-thumbnail'  # Adiciona a imagem do vídeo como capa do MP3
+        ])
     else:
         # SELETOR HÍBRIDO: MP4 > WebM > Best
+        # Nota: --add-metadata também funciona para vídeo (MP4/MKV)
         command.extend([
             '-f', 'bestvideo[ext=mp4]+bestaudio[ext=m4a]/bestvideo[ext=webm]+bestaudio[ext=webm]/best[ext=mp4]/best',
-            '--merge-output-format', 'mp4'
+            '--merge-output-format', 'mp4',
+            '--add-metadata',
+            '--embed-thumbnail'
         ])
 
     process = subprocess.Popen(
@@ -57,5 +67,9 @@ def download_youtube(url, path, format_type, progress_callback):
             base_name = os.path.splitext(name_no_prefix)[0]
             new_file = os.path.join(path, base_name + final_ext)
             
-            if os.path.exists(new_file): os.remove(new_file)
-            os.rename(old_file, new_file)
+            if os.path.exists(new_file): 
+                try: os.remove(new_file)
+                except: pass
+            
+            try: os.rename(old_file, new_file)
+            except: pass
