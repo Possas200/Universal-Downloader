@@ -16,27 +16,36 @@ def get_local_spotify_files(path):
     return files
 
 def download_spotify_track(url, path, cancel_event):
-    """Download otimizado com correção de travagem no processamento."""
+    """Download otimizado para Playlists Massivas (500+ músicas)."""
     try:
-        # Garante que o caminho existe antes de mudar o diretório
+        # Garante que o caminho existe
         if not os.path.exists(path):
             os.makedirs(path)
         os.chdir(path)
         
-        # COMANDO CORRIGIDO: 
-        # Usamos 'python -m spotdl' para garantir que usa o ambiente correto
-        # Adicionado --log-level ERROR para evitar que o buffer de saída encha e trave o processo
-        command = [
-            sys.executable, "-m", "spotdl", "download", url,
+        # Detetar ambiente (EXE ou Script)
+        if getattr(sys, 'frozen', False):
+            base_command = ["spotdl"]
+        else:
+            base_command = [sys.executable, "-m", "spotdl"]
+
+        # Adicionei --no-cache para evitar que dados corrompidos de downloads anteriores parem o processo
+        command = base_command + [
+            "download", url,
             "--threads", "4",
             "--format", "mp3",
-            "--log-level", "ERROR" 
+            "--log-level", "ERROR",
+            "--no-cache" 
         ]
         
+        # CORREÇÃO PRINCIPAL:
+        # stdout=subprocess.DEVNULL -> Envia o texto de progresso para o "lixo" do sistema.
+        # Isto impede que o buffer de memória encha e trave o download na música 100 ou 200.
+        # O progresso visual continua a ser gerido pelo folder_monitor do main.py.
         process = subprocess.Popen(
             command,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE, # Captura erros separadamente
+            stdout=subprocess.DEVNULL, 
+            stderr=subprocess.PIPE, # Mantemos stderr para capturar erros fatais no final
             universal_newlines=True,
             encoding='utf-8',
             creationflags=subprocess.CREATE_NO_WINDOW if os.name == 'nt' else 0
@@ -48,10 +57,15 @@ def download_spotify_track(url, path, cancel_event):
                 process.terminate()
                 cleanup_incomplete_downloads(path)
                 return False
-            time.sleep(0.5)
+            
+            # Pequena pausa para não sobrecarregar o CPU durante as 540 músicas
+            time.sleep(1.0)
             
         # Verifica se o processo terminou com erro
         if process.returncode != 0:
+            # Lemos o erro apenas no final se falhar
+            err = process.stderr.read()
+            if err: print(f"Erro SpotDL: {err}")
             return False
             
         return True
@@ -64,5 +78,6 @@ def cleanup_incomplete_downloads(path):
     try:
         for file in os.listdir(path):
             if file.endswith(".spotdl") or file.endswith(".temp"):
-                os.remove(os.path.join(path, file))
+                try: os.remove(os.path.join(path, file))
+                except: pass
     except: pass
