@@ -28,6 +28,9 @@ class App(ctk.CTk):
         
         self.cancel_event = threading.Event()
         self.detected_files = set()
+        self.initial_files = set()
+        self.transferred_count = 0
+        self.count_label = None
 
         self.grid_columnconfigure(0, weight=1)
         self.grid_columnconfigure(1, weight=0)
@@ -134,6 +137,10 @@ class App(ctk.CTk):
         url = self.url_entry.get().strip()
         if not url: return
         self.cancel_event.clear()
+        self.transferred_count = 0
+        if self.count_label:
+            self.count_label.configure(text="Ficheiros transferidos: 0")
+        self.initial_files = set(get_local_spotify_files(self.download_path))
         self.detected_files.clear()
         self.dl_btn.configure(state="disabled", text="A PROCESSAR...")
         self.main_progress.pack(pady=15, fill="x", before=self.dl_btn)
@@ -147,10 +154,16 @@ class App(ctk.CTk):
             if self.side_panel:
                 current_files = get_local_spotify_files(self.download_path)
                 for filename in current_files:
+                    # Ignora ficheiros que já existiam antes do download
+                    if filename in self.initial_files:
+                        continue
+
+                    # Só trata dos ficheiros novos desta sessão
                     if filename not in self.detected_files:
                         self.detected_files.add(filename)
                         self.after(0, lambda f=filename: self.add_to_side_list(f))
             time.sleep(0.25)
+
 
     def add_to_side_list(self, filename):
         if self.side_panel:
@@ -202,11 +215,20 @@ class App(ctk.CTk):
             if not self.side_panel:
                 self.side_panel = PlaylistPanel(self)
                 self.side_panel.grid(row=0, column=1, sticky="nsew", padx=(0, 20), pady=20)
-                UIStyles.center_window(self, 1050, 650)
+                self.transferred_count = 0  
+            self.count_label = ctk.CTkLabel(
+                self.side_panel,
+                text="Ficheiros transferidos: 0",
+                font=UIStyles.get_font(12)
+            )
+            self.count_label.pack(pady=(5, 0))
+
+            UIStyles.center_window(self, 1050, 650)
         else:
             if self.side_panel:
                 self.side_panel.grid_forget()
                 self.side_panel = None
+                self.count_label = None
             UIStyles.center_window(self, 650, 650)
 
     def sync_all(self, uid, val):
