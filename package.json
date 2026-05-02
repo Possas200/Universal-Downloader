@@ -1,0 +1,42 @@
+{
+  "name": "spotwave",
+  "version": "1.0.0",
+  "description": "Music downloader with metadata — Spotify, YouTube, YouTube Music",
+  "main": "main.js",
+  "scripts": {
+    "start": "electron .",
+    "dev": "electron . --inspect",
+    "build": "electron-builder --win"
+  },
+  "dependencies": {
+    "electron-store": "^8.1.0"
+  },
+  "devDependencies": {
+    "electron": "^29.0.0",
+    "electron-builder": "^24.13.3"
+  },
+  "build": {
+    "appId": "com.spotwave.app",
+    "productName": "SpotWave",
+    "files": [
+      "main.js",
+      "preload.js",
+      "src/**/*"
+    ],
+    "extraResources": [
+      {
+        "from": "bin/",
+        "to": "bin/",
+        "filter": ["**/*"]
+      }
+    ],
+    "win": {
+  "target": [
+    { "target": "portable", "arch": ["x64"] }
+  ],
+  "icon": "assets/icon.ico"
+}
+  },
+  "author": "SpotWave",
+  "license": "MIT"
+}
