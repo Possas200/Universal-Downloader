@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="assets/icon.ico" width="80" height="80" alt="SpotWave Logo">
+<img src="icon.ico" width="80" height="80" alt="SpotWave Logo">
 
 # ⚡ SpotWave
 
