@@ -4,6 +4,227 @@
 
 # ⚡ SpotWave
 
+**Download music from YouTube & YouTube Music as MP3 with full metadata — in one click.**
+
+[![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square&logo=windows)](https://github.com/)
+[![Made with Electron](https://img.shields.io/badge/made%20with-Electron-47848f?style=flat-square&logo=electron)](https://www.electronjs.org/)
+[![Engine](https://img.shields.io/badge/engine-yt--dlp-ff0000?style=flat-square)](https://github.com/yt-dlp/yt-dlp)
+[![License](https://img.shields.io/badge/license-MIT-green?style=flat-square)](LICENSE)
+
+<br>
+
+*Modern UI · Portable · No installation · Automatic metadata · Parallel downloads*
+
+</div>
+
+---
+
+## 🎯 What is SpotWave?
+
+SpotWave is a **Windows** desktop app that lets you download any song, video, or playlist from **YouTube** and **YouTube Music** directly to your computer as **high-quality MP3 (320kbps)**, with all metadata automatically embedded — title, artist, album, album art, and more.
+
+No command line. No complicated setup. **Paste the link, click Download, done.**
+
+---
+
+## ✨ Features
+
+| | Feature | Detail |
+|---|---|---|
+| 🎵 | **MP3 320kbps** | Maximum audio quality, always |
+| 🖼️ | **Embedded album art** | YouTube thumbnail converted and embedded into the MP3 |
+| 🏷️ | **Full metadata** | Title, artist, album, year — all automatic |
+| ⚡ | **Parallel downloads** | Up to 20 songs at once — finishes in seconds |
+| 📋 | **Playlists & albums** | Download hundreds of songs in a single go |
+| 🍪 | **Browser cookies** | Bypasses YouTube rate limits effortlessly |
+| 🖥️ | **Live terminal** | See exactly what's happening in real time |
+| 💾 | **Portable** | A single `.exe` file — no installation, plug and play |
+| 🎨 | **Modern UI** | macOS-style design with transparency and blur |
+
+---
+
+## 🚀 How to use
+
+> **No installation needed.** Just download `SpotWave.exe` and open it.
+
+### 1️⃣ Paste the link
+
+Copy any YouTube or YouTube Music link and paste it into the SpotWave search bar.
+
+```
+https://www.youtube.com/watch?v=...
+https://www.youtube.com/playlist?list=...
+https://music.youtube.com/watch?v=...
+https://music.youtube.com/playlist?list=...
+```
+
+### 2️⃣ Choose a folder
+
+Click the destination folder box to choose where your MP3s will be saved.  
+The folder is **saved automatically** — you won't need to pick it again.
+
+### 3️⃣ Click Download
+
+SpotWave handles everything else. You can follow the progress in real time via the sidebar and the main progress bar.
+
+### 4️⃣ Open your files
+
+When done, click **"Open folder"** to go straight to your downloaded MP3s.
+
+---
+
+## 🍪 Cookie System — How it works
+
+YouTube enforces **rate limits** on anonymous requests, which can cause downloads to fail or slow down significantly. SpotWave solves this intelligently and **100% locally** — your cookies never leave your computer.
+
+### How to set it up
+
+1. Open **⚙️ Settings** in SpotWave
+2. Under **"Browser for cookies"**, select the browser where you're logged into YouTube
+3. SpotWave extracts your cookies automatically the first time
+4. From then on, downloads work as if you were browsing YouTube yourself
+
+### Supported browsers
+
+| Browser | Supported |
+|---|---|
+| 🟦 Google Chrome | ✅ |
+| 🔵 Microsoft Edge | ✅ |
+| 🦁 Brave | ✅ |
+| 🦊 Firefox | ✅ |
+| 🎭 Opera | ✅ |
+| 🔴 Vivaldi | ✅ |
+
+> 💡 **Privacy:** Cookies are read directly from your browser and stored locally in `%AppData%\spotwave`. They are never sent to any external server.
+
+---
+
+## ⚡ Parallel Mode — Ultra-fast downloads
+
+SpotWave has a **Parallel Mode** that runs multiple download processes simultaneously — perfect for large playlists.
+
+Enable it in ⚙️ **Settings → Parallel Mode** and use the slider to choose between **1 and 20 simultaneous processes**.
+
+```
+Normal Mode   →  1 song at a time (sequential)
+Parallel Mode →  up to 20 songs at the same time 🚀
+```
+
+> ⚠️ At very high values (15–20), YouTube may impose temporary rate limits. The recommended sweet spot for large playlists is between **5 and 10**.
+
+---
+
+## 🖥️ Live Terminal
+
+Click **"View details"** during a download to open the built-in terminal and see exactly what yt-dlp is doing — download percentage, audio conversion, metadata tagging, thumbnail embedding, and more.
+
+```
+[download] Downloading item 3 of 13
+[download]  76.0% of 2.63MiB at 53.80MiB/s ETA 00:00
+[ExtractAudio] Destination: Fainted Love.mp3
+[Metadata] Adding metadata to "Fainted Love.mp3"
+[EmbedThumbnail] Adding thumbnail to "Fainted Love.mp3"
+```
+
+---
+
+## 📂 Output file structure
+
+```
+Selected folder/
+├── Song Name 1.mp3
+├── Song Name 2.mp3
+├── Song Name 3.mp3
+└── ...
+```
+
+Each MP3 contains embedded:
+- 🏷️ Title and artist
+- 💿 Album / playlist name
+- 🖼️ Cover art (YouTube thumbnail converted to PNG)
+- 📅 ID3v2 metadata compatible with any music player
+
+---
+
+## ⚙️ Settings
+
+| Option | Description | Default |
+|---|---|---|
+| **Download folder** | Where the MP3s are saved | System Music folder |
+| **Concurrent downloads** | Parallel fragments per file (yt-dlp internal) | 3 |
+| **Browser for cookies** | Browser used for YouTube authentication | None |
+| **Parallel Mode** | Multiple independent download processes | Disabled |
+| **Simultaneous processes** | Number of parallel downloads (1–20) | 3 |
+
+---
+
+## 🔧 Tech stack
+
+| Component | Role |
+|---|---|
+| [Electron](https://www.electronjs.org/) | Desktop app framework |
+| [yt-dlp](https://github.com/yt-dlp/yt-dlp) | YouTube download engine |
+| [FFmpeg](https://ffmpeg.org/) | Audio conversion and metadata embedding |
+| [electron-store](https://github.com/sindresorhus/electron-store) | Settings persistence |
+
+> `yt-dlp.exe` and `ffmpeg.exe` are **bundled inside the `.exe`** — you don't need to install them separately.
+
+---
+
+## 🏗️ Build from source
+
+Want to compile SpotWave yourself?
+
+```bash
+# 1. Install dependencies
+npm install
+
+# 2. Run in dev mode
+npm start
+
+# 3. Build the portable .exe
+npm run build
+```
+
+The final executable will appear at `dist/SpotWave.exe`.
+
+**Requirements to build:**
+- [Node.js](https://nodejs.org/) v18 or higher
+- `yt-dlp.exe` and `ffmpeg.exe` inside the `bin/` folder
+- `icon.ico` inside the `assets/` folder
+
+---
+
+## 📋 Supported links
+
+```
+✅ https://www.youtube.com/watch?v=XXXXXXXXXXX
+✅ https://www.youtube.com/playlist?list=XXXXXXXXXXX
+✅ https://youtu.be/XXXXXXXXXXX
+✅ https://music.youtube.com/watch?v=XXXXXXXXXXX
+✅ https://music.youtube.com/playlist?list=XXXXXXXXXXX
+```
+
+---
+
+<div align="center">
+
+Built with ❤️ using **Electron** + **yt-dlp** + **FFmpeg**
+
+*If you like the project, drop a ⭐ on GitHub!*
+
+</div>
+
+
+
+
+
+<div align="center">
+
+<img src="icon.ico" width="80" height="80" alt="SpotWave Logo">
+
+# ⚡ SpotWave
+
 **Descarrega músicas do YouTube e YouTube Music em MP3 com metadados completos — num só clique.**
 
 [![Platform](https://img.shields.io/badge/platform-Windows-blue?style=flat-square&logo=windows)](https://github.com/)
